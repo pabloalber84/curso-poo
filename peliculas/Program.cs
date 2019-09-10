@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace peliculas
 {
@@ -35,10 +36,14 @@ namespace peliculas
 	{
 		static void Main(string[] args)
 		{
-			Pelicula p1 = new Pelicula();
-			p1.SetTitulo("La La Land");
-			p1.SetAño(2016); 
-			Console.WriteLine("{0}({1})", p1.GetTitulo(), p1.GetAño());
+			List<Pelicula> peliculas = new List<Pelicula>();
+			peliculas.Add(new Pelicula("La forma del agua", 2017));
+			peliculas.Add(new Pelicula("Moonlight", 2016));
+			peliculas.Add(new Pelicula("Spotlight", 2015));
+			peliculas.Add(new Pelicula("Birdman", 2014));
+			peliculas.Add(new Pelicula("12 años de esclavitud", 2013));
+			foreach(Pelicula pelicula in peliculas)
+				pelicula.imprime();
 		}
 	}
 }
