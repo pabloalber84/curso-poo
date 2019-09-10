@@ -9,6 +9,7 @@ namespace peliculas
 		private Int16 año;
 		private string pais;
 		private string director;
+		private List<Actor> actores = new List<Actor>();
 		public Pelicula() {
 
 		}
@@ -31,19 +32,33 @@ namespace peliculas
 		public void imprime() {
 			Console.WriteLine("{0} ({1})", this.titulo, this.año);
 		}
+		public void AgregarActor(Actor actor) {
+			actores.Add(actor);
+		}
+		public void ImprimeActores() {
+			Console.WriteLine("Reparto:");
+			foreach(Actor actor in actores)
+				Console.WriteLine("{0} ({1})", actor.nombre, actor.año);
+		}
+	}
+	class Actor
+	{
+		public string nombre;
+		public Int16 año;
+		public Actor(string nombre, Int16 año) {
+			this.nombre = nombre;
+			this.año = año;
+		}
 	}
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			List<Pelicula> peliculas = new List<Pelicula>();
-			peliculas.Add(new Pelicula("La forma del agua", 2017));
-			peliculas.Add(new Pelicula("Moonlight", 2016));
-			peliculas.Add(new Pelicula("Spotlight", 2015));
-			peliculas.Add(new Pelicula("Birdman", 2014));
-			peliculas.Add(new Pelicula("12 años de esclavitud", 2013));
-			foreach(Pelicula pelicula in peliculas)
-				pelicula.imprime();
+			Pelicula p1 = new Pelicula("La La Land", 2016);
+			p1.AgregarActor(new Actor("Ryan Gosling", 1980));
+			p1.AgregarActor(new Actor("Emma Stone", 1988));
+
+			p1.ImprimeActores();
 		}
 	}
 }
