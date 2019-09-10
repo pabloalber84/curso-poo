@@ -1,2 +1,2 @@
-# curso poo
- Curso de Programación Orientada a Objetos
+# Portafolio de Evidencias de Curso POO
+ Evidencias de curso de Programación Orientada a Objetos
