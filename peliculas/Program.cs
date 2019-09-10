@@ -8,6 +8,13 @@ namespace peliculas
 		private Int16 año;
 		private string pais;
 		private string director;
+		public Pelicula() {
+
+		}
+		public Pelicula(string titulo, Int16 año) {
+			this.titulo = titulo;
+			this.año = año;
+		}
 		public void SetTitulo(string titulo) {
 			this.titulo = titulo;
 		}
@@ -19,6 +26,9 @@ namespace peliculas
 		}
 		public Int16 GetAño() {
 			return this.año;
+		}
+		public void imprime() {
+			Console.WriteLine("{0} ({1})", this.titulo, this.año);
 		}
 	}
 	class Program
