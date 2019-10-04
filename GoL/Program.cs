@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace gol
 {
@@ -100,6 +101,11 @@ namespace gol
 			if((cell.renglon >= 0 && cell.renglon <= num_renglones) && (cell.columna >= 0 && cell.columna <= num_columnas))
 				grid[cell.renglon][cell.columna] = cell;
 		}
+		public void agrega_map(short [,] pos) {
+			for(int i = 0; i < pos.GetLength(0); i++) {
+				agrega(new Celula(Estado.viva, this, pos[i, 0], pos[i, 1]));
+			}
+		}
 		public Celula cell_in_pos(int renglon, int columna) {
 			if(!(renglon >= 0 && renglon < num_renglones))
 				throw new ArgumentException("El renglon especificado esta fuera del rango ("+renglon+", MAX "+num_renglones+") Params: ("+renglon+", "+columna+")", "renglon");
@@ -114,15 +120,21 @@ namespace gol
 					grid[i][j].actualizar();
 				}
 			}
+		}
+		public void siguiente_turno() {
 			for(short i = 0; i < grid.Count; i++) {
 				for(short j = 0; j < grid[i].Count; j++) {
 					grid[i][j].actualizar_estado();
 				}
 			}
 		}
-		public void print() {
+		public void print(bool show_pos = false) {
 			string buff = "";
+			if(show_pos)
+				buff+="   x\n   _\ny |";
 			for(short i = 0; i < grid.Count; i++) {
+				if(show_pos && i != 0)
+					buff+="   ";
 				for(short j = 0; j < grid[i].Count; j++) {
 					buff += grid[i][j].symbol();
 				}
@@ -137,25 +149,79 @@ namespace gol
 {
 		static void Main(string[] args)
 		{
-			Tablero GoL = new Tablero(10, 5);
-			GoL.agrega(new Celula(Estado.viva, GoL, 1, 0));
+/*			Tablero GoL = new Tablero(10, 5);
+			GoL.agrega(new Celula(Estado.viva, GoL, 0, 0));
 			GoL.agrega(new Celula(Estado.viva, GoL, 1, 1));
-			GoL.agrega(new Celula(Estado.viva, GoL, 2, 0));
+			GoL.agrega(new Celula(Estado.viva, GoL, 1, 2));
 			GoL.agrega(new Celula(Estado.viva, GoL, 2, 1));
+			GoL.agrega(new Celula(Estado.viva, GoL, 1, 2));*/
+			Tablero GoL = new Tablero(15, 40);
+			short[,] glider_gun = new short[,] {
+				{0, 24},
+				{1, 22}, {1, 24},
+				{2, 12}, {2, 13}, {2, 20}, {2, 21}, {2, 34}, {2, 35},
+				{3,11}, {3,15}, {3,20}, {3,21}, {3,34}, {3,35},
+				{4,0}, {4,1}, {4,10}, {4,16}, {4,20}, {4,21},
+				{5,0}, {5,1}, {5,10}, {5,14}, {5,16}, {5,17}, {5,22}, {5, 24},
+				{6,10}, {6,16}, {6,24},
+				{7,11}, {7,15},
+				{8,12}, {8,13}
+			};
+			GoL.agrega_map(glider_gun);
 			int input = 1;
-			while(input == 1) {
-				GoL.print();
-				Console.Write("Presiona 1 para continuar: ");
+			while(input == 1)
+			{
+				Console.Clear();
+				Console.WriteLine("Tablero de juego");
+				GoL.print(true);
+				Console.Write("Presiona 1 para el siguiente turno, 2 para modificar el tablero o 3 para adelantar 10 turnos: ");
 				input = int.Parse(Console.ReadLine());
 				if(input == 1) {
 					GoL.actualizar();
-					Console.Clear();
+					GoL.siguiente_turno();
+				} else if(input == 2) {
+					InvalidPos:
+					Console.Write("Ingrese las posiciones de la celula en formato 'x,y,viva': ");
+					var pos = Console.ReadLine().Split(",");
+					if(pos.Length != 3)
+					{
+						Console.WriteLine("Deben ser 3 parametros en formato 'x,y,viva', ejemplo: 5,2,1");
+						goto InvalidPos;
+					} else {
+						short x = short.Parse(pos[0]);
+						short y = short.Parse(pos[1]);
+						string estado = pos[2];
+						if(!(x >= 0 && x < GoL.num_renglones)) {
+							Console.WriteLine("El renglon especificado esta fuera de los alcances del tablero.");
+							goto InvalidPos;
+						} else if(!(y >= 0 && y < GoL.num_columnas)) {
+							Console.WriteLine("El renglon especificado esta fuera de los alcances del tablero.");
+							goto InvalidPos;
+						} else if(estado != "1" && estado != "0" && estado != "false" && estado != "true") {
+							Console.WriteLine("El renglon especificado esta fuera de los alcances del tablero.");
+							goto InvalidPos;
+						} else {
+							input = 1;
+							bool viva = false;
+							if(estado == "1" || estado == "true")
+								viva = true;
+							GoL.agrega(new Celula((viva ? Estado.viva : Estado.muerta), GoL, x, y));
+						}
+					}
+				} else if(input == 3) {
+					int tick = 150;
+					int ticks = 50;
+					for(int i = 0; i < ticks; i++) {
+						Console.Clear();
+						GoL.print(true);
+						GoL.actualizar();
+						GoL.siguiente_turno();
+						Thread.Sleep(tick);
+					}
+					input = 1;
 				}
 			}
-/*			GoL.print();
-			GoL.agrega(new Celula(Estado.viva, GoL, 1, 2));
-			GoL.actualizar();
-			GoL.print();*/
+			Console.WriteLine("Gracias por jugar el 'Juego de la Vida'");
 		}
 	}
 }
