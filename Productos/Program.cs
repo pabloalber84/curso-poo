@@ -48,8 +48,8 @@ namespace Productos
 				}
 			} catch(FileNotFoundException) {
 				File.Create(@archivo+".txt").Dispose();
-				if (!File.Exists(@archivo+".dat"))
-					File.Create(@archivo+".dat").Dispose();
+				if (!File.Exists(@archivo+".bin"))
+					File.Create(@archivo+".bin").Dispose();
 			} catch(IOException ex) {
 				Console.WriteLine("Error al leer el archivo: "+ex.Message);
 			}
@@ -85,9 +85,14 @@ namespace Productos
 				if(productos.Count < 1)
 					writter.WriteLine("");
 			}
-			using(BinaryWriter writter = new BinaryWriter(new FileStream(@archivo+".dat", FileMode.OpenOrCreate))) {
+			using(BinaryWriter writter = new BinaryWriter(new FileStream(@archivo+".bin", FileMode.OpenOrCreate, FileAccess.Write))) {
 				foreach(Producto p in productos) {
-					writter.Write(String.Format("{0}|{1}|{2}|{3}|{4}\r\n", p.codigo, p.descripcion, p.precio, p.departamento, p.likes));
+//					writter.Write(String.Format("{0}|{1}|{2}|{3}|{4}", p.codigo, p.descripcion, p.precio, p.departamento, p.likes));
+					writter.Write(p.codigo);
+					writter.Write(p.descripcion);
+					writter.Write(p.precio);
+					writter.Write(p.departamento);
+					writter.Write(p.likes);
 				}
 				if(productos.Count < 1)
 					writter.Write("");
@@ -120,7 +125,6 @@ namespace Productos
 	{
 		static void Main(string[] args)
 		{
-/*
 			ProductoDB database = new ProductoDB();
 			database.Parse();
 			database.Empty();
@@ -134,14 +138,14 @@ namespace Productos
 			database.productos.Add(new Producto("PBA 118", "Sacapuntas Metal", 20.00d, 2, 75));
 			//database.GetDepartament(1);
 			database.OrderByLikes();
-			database.Write();*/
-			ProductoDB database = new ProductoDB();
+			database.Write();
+/*			ProductoDB database = new ProductoDB();
 			database.Parse();
 			Console.Write("Ingrese el nombre del archivo a importar: ");
 			string archivo = Console.ReadLine();
 			database.AddFrom(archivo);
 			database.OrderByLikes();
-			database.Write();
+			database.Write();*/
 		}
 	}
 }
