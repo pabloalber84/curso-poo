@@ -25,10 +25,7 @@ namespace G_Cola
 		public void Push(T[] items)
 		{
 			foreach(T item in items) {
-				if (m_Pointer >= m_Size)
-					throw new StackOverflowException();
-				m_Items[m_Pointer] = item;
-				m_Pointer++;
+				this.Push(item);
 			}
 		}
 		public T Pop()

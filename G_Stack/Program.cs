@@ -25,10 +25,7 @@ namespace G_Stack
 		public void Push(T[] items)
 		{
 			foreach(T item in items) {
-				if (m_StackPointer >= m_Size)
-					throw new StackOverflowException();
-				m_Items[m_StackPointer] = item;
-				m_StackPointer++;
+				this.Push(item);
 			}
 		}
 		public T Pop()
